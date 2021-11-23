@@ -1,8 +1,8 @@
 
 #### custom #####
 
-streamlit_custom_slider/frontend/node_modules/*
-
+streamlit_force_graph_simulato/frontend/node_modules/*
+streamlit_force_graph_simulato/frontend/build/*
 ######################
 # Python             #
 ######################
