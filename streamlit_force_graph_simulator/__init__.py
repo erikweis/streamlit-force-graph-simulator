@@ -1,7 +1,7 @@
 import os
 import streamlit.components.v1 as components
 
-from forcegraphsimulation import ForceGraphSimulation
+from .forcegraphsimulation import ForceGraphSimulation
 
 # Create a function _component_func which will call the frontend component when run
 

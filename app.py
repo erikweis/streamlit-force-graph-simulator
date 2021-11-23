@@ -5,7 +5,7 @@ import streamlit.components.v1 as components  # Import Streamlit
 #components.html("<html><body><h1>Hello, World</h1></body></html>", width=200, height=200)
 
 # Import the wrapper function from your package
-from streamlit_custom_slider import st_graph
+from streamlit_force_graph_simulator import st_graph, ForceGraphSimulation
 import streamlit as st
 
 import json
@@ -170,17 +170,4 @@ st.write(w)
 
 
 
-# for i in range(10):
-
-    
-
-#     con_node = random.choice(list(G.nodes))
-#     new_node = G.number_of_nodes
-#     G.add_node(new_node)
-#     G.add_edge(con_node,new_node)
-
-#     data = json_graph.node_link_data(G)
-
-#     time.
-
-#     st.write(st_graph(data=data,key="graph"))
+# st.write(st_graph(data=data,key="graph"))
