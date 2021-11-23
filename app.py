@@ -34,6 +34,7 @@ st.title("My Streamlit App")
 
 #G = nx.erdos_renyi_graph(5,0.8)
 G = nx.les_miserables_graph()
+print(nx.is_connected(G))
 for node in G.nodes:
     G.nodes[node]['color'] = random.choice(['red','blue'])
 data = json_graph.node_link_data(G)
@@ -121,20 +122,29 @@ def link_attributes_event(source,target,**kwargs):
 #change colors
 events = []
 for _ in range(1000):
+    print(_)
     node = random.choice(list(G.nodes))
     neighbors = list(G[node])
+    try:
+        assert len(neighbors)
+    except:
+        print(node, list(G.neighbors(node)))
     node_color = G.nodes[node]['color']
     if random.random() < 0.1:
-        neighbor = random.choice(neighbors)
-        neighbor_color = G.nodes[neighbor]['color']
-        G.nodes[node]['color'] = neighbor_color
-        events.append([node_attributes_event(node,color=neighbor_color)])
+        if neighbors:
+            neighbor = random.choice(neighbors)
+            neighbor_color = G.nodes[neighbor]['color']
+            G.nodes[node]['color'] = neighbor_color
+            events.append([node_attributes_event(node,color=neighbor_color)])
+
     else:
         opp_neighbors = [n for n in neighbors if G.nodes[n]['color'] != G.nodes[node]['color'] ]
         if opp_neighbors:
             old_neighbor = random.choice(opp_neighbors)
 
-            choices = list(nx.ego_graph(G,node,radius=2,center=False).nodes)
+            # choices = list(nx.ego_graph(G,node,radius=2,center=False).nodes)
+            choices = list(G.nodes)
+            choices.remove(node)
             new_neighbor = random.choice(choices)
             events.append([remove_link_event(node,old_neighbor),\
                 add_link_event(node,new_neighbor)])
