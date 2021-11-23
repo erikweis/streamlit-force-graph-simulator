@@ -13,8 +13,9 @@ class ForceGraphSimulation:
         self.graph = initial_graph
         self.is_directed = initial_graph.is_directed()
 
+        self._current_event = []
         self._events = []
-        self._curent_event = []
+    
         self.node_attributes_to_track = [] if node_attributes_to_track is None else node_attributes_to_track
         self.link_attributes_to_track = [] if link_attributes_to_track is None else link_attributes_to_track
 
@@ -95,19 +96,19 @@ class ForceGraphSimulation:
     def set_node_attributes(self,node,**attr):
 
         self._node_attributes_event(node,**attr)
-        nx.set_node_attributes(self.graph.G, {node:attr})
+        nx.set_node_attributes(self.graph, {node:attr})
 
-    def add_link(self,source,target,**attr):
+    def add_edge(self,source,target,**attr):
 
         self._add_link_event(source,target,**attr)
         self.graph.add_edge(source,target,**attr)
 
-    def remove_link(self,source,target):
+    def remove_edge(self,source,target):
 
         self._remove_link_event(source,target)
         self.graph.remove_edge(source,target)
 
-    def set_link_attributes(self,source,target,**attr):
+    def set_edge_attributes(self,source,target,**attr):
 
         self._link_attributes_event(source,target,**attr)
         nx.set_edge_attributes(self.graph,{(source,target):attr})
