@@ -9,6 +9,7 @@ streamlit_custom_slider/frontend/node_modules/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+streamlit_custom_slider/__pycache__/
 *.py[cod]
 *$py.class
 

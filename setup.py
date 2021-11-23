@@ -1,13 +1,13 @@
 import setuptools
 
 setuptools.setup(
-    name="streamlit-custom-slider",
+    name="streamlit-force-graph-simulator",
     version="0.0.1",
-    author="",
-    author_email="",
-    description="",
-    long_description="",
-    long_description_content_type="text/plain",
+    author="Erik Weis",
+    author_email="erik.weis@uvm.edu",
+    description="Linking python with visualizing processes on and off networks.",
+    long_description="readme.md",
+    long_description_content_type="text/markdown",
     url="",
     packages=setuptools.find_packages(),
     include_package_data=True,

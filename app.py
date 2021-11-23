@@ -121,7 +121,7 @@ def link_attributes_event(source,target,**kwargs):
 
 #change colors
 events = []
-for _ in range(1000):
+for _ in range(100):
     print(_)
     node = random.choice(list(G.nodes))
     neighbors = list(G[node])

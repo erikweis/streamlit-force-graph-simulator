@@ -27,11 +27,15 @@ const Graph = (props: ComponentProps) => {
       setData((statedata)=>{
         let network = statedata.network;
         let time = statedata.time;
+        
+        if (time%events.length === 0) {
+          network = initial_data
+        }
+
         let nodes = network.nodes;
         let links = network.links;
-
         let events_list = events[time%events.length];
-        //console.log(events_list);
+
         for (var e of events_list) {
 
           if (e.event_type === 'add_node') {
@@ -57,7 +61,7 @@ const Graph = (props: ComponentProps) => {
                   return true
                 }
               });
-              console.log(links.length-length_before);
+              //console.log(links.length-length_before);
             }
             
           } else if(e.event_type=== 'node_attributes'){
@@ -90,11 +94,11 @@ const Graph = (props: ComponentProps) => {
         return {network:new_data,time:time};
       });
       
-    },100,[statedata,events]);
+    },100,[statedata,events,initial_data]);
     return () => {
       clearInterval(interval);
     };
-  },[statedata,events]);
+  },[statedata,events,initial_data]);
 
 
   // Add a label and pass min/max variables to the baseui Slider
