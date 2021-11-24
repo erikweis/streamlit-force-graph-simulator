@@ -14,7 +14,7 @@ const Graph = (props: ComponentProps) => {
    * This will look for label, minValue and maxValue keys
    * to store them in separate variables.
    */
-  const {data, events, counter} = props.args;
+  const {data, events, time_interval, graphprops} = props.args;
 
   let time=0;
   let initial_data = { nodes:data.nodes, links:data.links }
@@ -34,7 +34,14 @@ const Graph = (props: ComponentProps) => {
 
         let nodes = network.nodes;
         let links = network.links;
-        let events_list = events[time%events.length];
+
+        //set events list
+        let events_list;
+        if (events.length>0){
+          events_list = events[time%events.length];
+        } else {
+          events_list = []
+        }
 
         for (var e of events_list) {
 
@@ -94,11 +101,11 @@ const Graph = (props: ComponentProps) => {
         return {network:new_data,time:time};
       });
       
-    },100,[statedata,events,initial_data]);
+    },time_interval,[statedata,events,initial_data]);
     return () => {
       clearInterval(interval);
     };
-  },[statedata,events,initial_data]);
+  },[statedata,events,time_interval,initial_data]);
 
 
   // Add a label and pass min/max variables to the baseui Slider
@@ -106,9 +113,7 @@ const Graph = (props: ComponentProps) => {
     <>
         <ForceGraph2D
             graphData={statedata.network}
-            cooldownTicks={100}
-            nodeAutoColorBy="group"
-            height={500}
+            {...graphprops}
         />
     </>
   );
