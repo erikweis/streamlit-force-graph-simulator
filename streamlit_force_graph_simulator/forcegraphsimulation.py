@@ -5,11 +5,21 @@ from networkx.readwrite import json_graph
 
 class ForceGraphSimulation:
 
-
-    """ForceGraphSimulation, designed to assist in the creation of a
-    `streamlit_force_graph_simulator` component.
+    """ForceGraphSimulation is a wrapper class for networkx `Graph` objects, 
+    designed to assist in the creation of a `streamlit_force_graph_simulator` 
+    component. When simulating networks,
 
     Contains an underlying networkx graph.
+
+    Args:
+        initial_graph: a networkx `Graph` object to be wrapped
+
+    Attributes:
+        graph: the underlying networkx `Graph` object
+        events: a list of events, where each element in the list is itself
+            a list of events that occur. 
+        
+        
 
     Methods:
         add_node()
@@ -20,11 +30,7 @@ class ForceGraphSimulation:
         set_edge_attributes()
     """
 
-    def __init__(
-        self,
-        initial_graph,
-        node_attributes_to_track = None,
-        link_attributes_to_track = None):
+    def __init__(self, initial_graph):
 
         self.graph = initial_graph
         self.initial_graph_json = json_graph.node_link_data(initial_graph)
@@ -32,9 +38,7 @@ class ForceGraphSimulation:
 
         self._current_event = []
         self._events = []
-    
-        self.node_attributes_to_track = [] if node_attributes_to_track is None else node_attributes_to_track
-        self.link_attributes_to_track = [] if link_attributes_to_track is None else link_attributes_to_track
+
 
     def new_event(self):
 
@@ -48,7 +52,13 @@ class ForceGraphSimulation:
 
     def _add_node_event(self,nodeID,**kwargs):
 
-        """Add node to network, log event."""
+        """Add node to network, log event.
+        
+        Args:
+            nodeID
+        Optional Args:
+            **kwargs: any node attribute
+        """
 
         e = {}
         e['event_type'] = 'add_node'
@@ -61,7 +71,11 @@ class ForceGraphSimulation:
 
     def _remove_node_event(self,nodeID):
 
-        """Remove node from network, log event."""
+        """Remove node from network, log event.
+        
+        Args:
+            nodeID
+        """
 
         e = {}
         e['event_type'] = 'remove_node'
@@ -72,7 +86,13 @@ class ForceGraphSimulation:
 
     def _node_attributes_event(self,nodeID,**kwargs):
 
-        """Change node attributes, log event."""
+        """Change node attributes, log event.
+        
+        Args:
+            nodeID
+        Optional Args:
+            kwargs: any node attribute
+        """
 
         e = {}
         e['event_type'] = 'node_attributes'
@@ -84,7 +104,10 @@ class ForceGraphSimulation:
 
     def _add_link_event(self,source,target,**kwargs):
         
-        """Add edge to network, log event."""
+        """Add edge to network, log event.
+        
+        
+        """
 
         e = {}
         e['event_type'] = 'add_link'
@@ -96,7 +119,12 @@ class ForceGraphSimulation:
 
     def _remove_link_event(self,source,target):
 
-        """Remove link from network, log event."""
+        """Remove link from network, log event.
+        
+        Args:
+            source: the source node of the edge
+            target: the target node of the edge
+        """
 
         e = {}
         e['event_type'] = 'remove_link'
@@ -109,7 +137,14 @@ class ForceGraphSimulation:
 
     def _link_attributes_event(self,source,target,**kwargs):
         
-        """Change link attributes, log event."""
+        """Change link attributes, log event.
+        
+        Args:
+            source: the source node of the edge
+            target: the target node of the edge
+        Optional Args:
+            kwargs: any valid link argument
+        """
 
         e = {}
         e['event_type'] = 'link_attributes'
@@ -146,7 +181,14 @@ class ForceGraphSimulation:
 
     def add_edge(self,source,target,**attr):
 
-        """Add edge and log event."""
+        """Add edge and log event.
+        
+        Args:
+            source: the source node of the edge
+            target: the target node of the edge
+        Optional Args:
+            kwargs: any valid edge attribute
+        """
 
         self._add_link_event(source,target,**attr)
         self.graph.add_edge(source,target,**attr)
@@ -154,7 +196,12 @@ class ForceGraphSimulation:
 
     def remove_edge(self,source,target):
 
-        """Remove edge and log event."""
+        """Remove edge and log event.
+        
+        Args:
+            source: the source node of the edge
+            target: the target node of the edge
+        """
 
         self._remove_link_event(source,target)
         self.graph.remove_edge(source,target)
@@ -162,7 +209,14 @@ class ForceGraphSimulation:
 
     def set_edge_attributes(self,source,target,**attr):
 
-        """Set edge attributes and log event."""
+        """Set edge attributes and log event.
+        
+        Args:
+            source: the source node of the edge
+            target: the target node of the edge
+        Optional Args:
+            kwargs: any valid edge argument
+        """
 
         self._link_attributes_event(source,target,**attr)
         nx.set_edge_attributes(self.graph,{(source,target):attr})

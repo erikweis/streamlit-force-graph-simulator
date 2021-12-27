@@ -15,6 +15,7 @@
     "@types/styletron-standard": "^2.0.2",
     "baseui": "^10.5.0",
     "react": "^16.13.1",
+    "react-bootstrap": "^2.0.4",
     "react-dom": "^16.13.1",
     "react-force-graph-2d": "^1.23.8",
     "react-force-graph-3d": "^1.21.10",
