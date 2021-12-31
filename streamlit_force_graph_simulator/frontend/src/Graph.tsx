@@ -6,7 +6,6 @@ import {
 } from "streamlit-component-lib";
 import ForceGraph2D from 'react-force-graph-2d';
 import Button from "react-bootstrap/Button";
-//import { ProgressBar } from "react-bootstrap";
 import { Play, Pause,ArrowCounterclockwise} from 'react-bootstrap-icons';
 
 
@@ -83,7 +82,6 @@ const Graph = (props: ComponentProps) => {
           } else {
             events_list = []
           }
-
           
           //all events
           let nodes = network.nodes;
@@ -128,7 +126,7 @@ const Graph = (props: ComponentProps) => {
                 link[propt]=e.attributes[propt]
               }
             } else if (e.event_type === 'new_graph'){
-              //console.log(e.graph)
+              console.log(e.graph)
               nodes = e.graph.nodes;
               links = e.graph.links;
             }
@@ -153,19 +151,16 @@ const Graph = (props: ComponentProps) => {
     };
   },[statedata,events,time_interval,initial_data]);
 
-  // play pause button
-  let button = <Button onClick={playpause} variant={"light"}>{statedata.paused ? <Play/> : <Pause/>}</Button>
-  let resetbtn = <Button onClick={reset} variant={'light'}><ArrowCounterclockwise/></Button>
-
   // Add a label and pass min/max variables to the baseui Slider
   return (
     <>
-      {button}
-      {resetbtn}
+      <Button onClick={playpause} variant={"light"}>{statedata.paused ? <Play/> : <Pause/>}</Button>
+      <Button onClick={reset} variant={'light'}><ArrowCounterclockwise/></Button>
       <p>{statedata.time}/{events.length}</p>
       <ForceGraph2D
           graphData={statedata.network}
           {...graphprops}
+          key={Math.round(Math.random()*100)}
       />
     </>
   );

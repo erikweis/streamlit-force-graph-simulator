@@ -19,8 +19,6 @@ class ForceGraphSimulation:
         events: a list of events, where each element in the list is itself
             a list of events that occur. 
         
-        
-
     Methods:
         add_node()
         add_edge()
@@ -104,10 +102,7 @@ class ForceGraphSimulation:
 
     def _add_link_event(self,source,target,**kwargs):
         
-        """Add edge to network, log event.
-        
-        
-        """
+        """Add edge to network, log event."""
 
         e = {}
         e['event_type'] = 'add_link'

@@ -4,11 +4,11 @@ import streamlit.components.v1 as components
 from .forcegraphsimulation import ForceGraphSimulation
 
 # Create a function _component_func which will call the frontend component when run
-use_build = False
+use_build = True
 if use_build:
     parent_dir = os.path.dirname(os.path.abspath(__file__))
     build_dir = os.path.join(parent_dir, "frontend/build")
-    _component_func_graph = components.declare_component("new_component_name", path=build_dir)
+    _component_func_graph = components.declare_component("graph", path=build_dir)
 else:
     _component_func_graph = components.declare_component("graph",url="http://localhost:3001")
 
