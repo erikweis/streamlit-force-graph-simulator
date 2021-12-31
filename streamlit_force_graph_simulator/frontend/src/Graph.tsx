@@ -6,7 +6,9 @@ import {
 } from "streamlit-component-lib";
 import ForceGraph2D from 'react-force-graph-2d';
 import Button from "react-bootstrap/Button";
-import { ProgressBar } from "react-bootstrap";
+//import { ProgressBar } from "react-bootstrap";
+import { Play, Pause,ArrowCounterclockwise} from 'react-bootstrap-icons';
+
 
 const Graph = (props: ComponentProps) => {
 
@@ -16,18 +18,23 @@ const Graph = (props: ComponentProps) => {
   let initial_data = { nodes:initial_graph.nodes, links:initial_graph.links }
   const [statedata, setData] = useState({network:initial_data,time:time,paused:true});
 
-  console.log(events[1])
-
   useEffect(() => Streamlit.setFrameHeight());
 
   let playpause = () => {
     setData((statedata)=>{
+      
+      // network should be reset if pressing play after previous simulation finished
+      var network;
+      if (statedata.time === 0) {
+        network = initial_data
+      } else {
+        network = statedata.network
+      }
 
-      let newplaypause = !statedata.paused;
       return {
-        network:statedata.network,
+        network:network,
         time:statedata.time,
-        paused: newplaypause
+        paused: !statedata.paused
       }
     })
   };
@@ -42,6 +49,10 @@ const Graph = (props: ComponentProps) => {
     })
   }
 
+  useEffect(()=>{
+    setData({network:initial_graph,time:0,paused:true})
+  },[props]);
+
   useEffect(() => {
     let interval = setInterval(() => {      
       setData((statedata)=>{
@@ -52,12 +63,18 @@ const Graph = (props: ComponentProps) => {
           let network = statedata.network;
           let time = statedata.time;
           
-          if (time%events.length === 0) {
+          // reset network at beginning
+          if (time === 0) {
             network = initial_data
+          } 
+          // at end of simulation pause simulation and reset time to zero
+          else if (time === events.length) {
+            return {
+              network: network,
+              time: time,
+              paused: true
+            }
           }
-
-          let nodes = network.nodes;
-          let links = network.links;
 
           //set events list
           let events_list;
@@ -66,6 +83,11 @@ const Graph = (props: ComponentProps) => {
           } else {
             events_list = []
           }
+
+          
+          //all events
+          let nodes = network.nodes;
+          let links = network.links;
 
           for (var e of events_list) {
 
@@ -121,7 +143,6 @@ const Graph = (props: ComponentProps) => {
             paused:statedata.paused
           };
         } else {
-
           return statedata;
         }
       });
@@ -132,15 +153,16 @@ const Graph = (props: ComponentProps) => {
     };
   },[statedata,events,time_interval,initial_data]);
 
+  // play pause button
+  let button = <Button onClick={playpause} variant={"light"}>{statedata.paused ? <Play/> : <Pause/>}</Button>
+  let resetbtn = <Button onClick={reset} variant={'light'}><ArrowCounterclockwise/></Button>
 
   // Add a label and pass min/max variables to the baseui Slider
   return (
     <>
-      <Button onClick={playpause}>{statedata.paused ? 'Play' : 'Pause'}</Button>
-      <Button onClick={reset}>Reset</Button>
-      <ProgressBar now={statedata.time} max ={events.length+1} min={0} isChild={false}/>
-
-      <p>{statedata.time}</p>
+      {button}
+      {resetbtn}
+      <p>{statedata.time}/{events.length}</p>
       <ForceGraph2D
           graphData={statedata.network}
           {...graphprops}
