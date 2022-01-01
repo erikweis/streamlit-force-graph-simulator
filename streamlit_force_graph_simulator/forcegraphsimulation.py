@@ -38,7 +38,7 @@ class ForceGraphSimulation:
         self._events = []
 
 
-    def new_event(self):
+    def save_event(self):
 
         """Create a new event. All events added to the function since
         previous calls to this function will be wrapped in a single

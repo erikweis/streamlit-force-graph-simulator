@@ -8,10 +8,9 @@ import ForceGraph2D from 'react-force-graph-2d';
 import Button from "react-bootstrap/Button";
 import { Play, Pause,ArrowCounterclockwise} from 'react-bootstrap-icons';
 
-
 const Graph = (props: ComponentProps) => {
 
-  const {initial_graph, events, time_interval, graphprops} = props.args;
+  const {initial_graph, events, time_interval, graphprops, continuous_play, directed} = props.args;
 
   let time=0;
   let initial_data = { nodes:initial_graph.nodes, links:initial_graph.links }
@@ -19,25 +18,27 @@ const Graph = (props: ComponentProps) => {
 
   useEffect(() => Streamlit.setFrameHeight());
 
+  // play pause from button
   let playpause = () => {
     setData((statedata)=>{
       
-      // network should be reset if pressing play after previous simulation finished
-      var network;
-      if (statedata.time === 0) {
+      // time should be reset if pressing play after previous simulation finished
+      var network = statedata.network;
+      var time = statedata.time;
+      if (time === events.length && statedata.paused) {
         network = initial_data
-      } else {
-        network = statedata.network
+        time = 0
       }
 
       return {
         network:network,
-        time:statedata.time,
+        time:time,
         paused: !statedata.paused
       }
     })
   };
 
+  // reset from reset button press
   let reset = () => {
     setData((statedata)=>{
       return {
@@ -48,9 +49,10 @@ const Graph = (props: ComponentProps) => {
     })
   }
 
+  //listen for prop changes and reset state
   useEffect(()=>{
     setData({network:initial_graph,time:0,paused:true})
-  },[props]);
+  },[initial_graph,events, time_interval, graphprops, continuous_play]);
 
   useEffect(() => {
     let interval = setInterval(() => {      
@@ -66,8 +68,17 @@ const Graph = (props: ComponentProps) => {
           if (time === 0) {
             network = initial_data
           } 
-          // at end of simulation pause simulation and reset time to zero
+          // at end of simulation
           else if (time === events.length) {
+            // if continuous_play, keep going
+            if (continuous_play) {
+              return {
+                network: initial_data,
+                time:0,
+                paused:false
+              }
+            }
+            //pause simulation and reset time to zero
             return {
               network: network,
               time: time,
@@ -93,25 +104,23 @@ const Graph = (props: ComponentProps) => {
               nodes = [...nodes,e.node]
             } else if (e.event_type === 'remove_node'){
               nodes = nodes.filter((item: any)=>item.id !== e.id)
+              links = links.filter((item: any)=>(item.source.id !== e.id && item.target.id !== e.id))
             } else if (e.event_type === 'add_link'){
               let source = nodes.find((n:any)=>(n.id === e.source))
               let target = nodes.find((n:any)=>(n.id === e.target))
               let newlink = {...e.attributes,source:source,target:target}
               links = [...links,newlink]
             } else if (e.event_type === 'remove_link'){
-              if (e.directed === 'true'){
-                links = links.filter((item:any)=>((item.source.id !== e.source) && (item.target.id !== e.target)))
-              } else {
-                links = links.filter((link:any)=>{
-                  if ((link.source.id === e.source) && (link.target.id === e.target)) {
-                    return false
-                  } else if ((link.source.id === e.target) && (link.target.id === e.source)){
-                    return false
-                  } else {
-                    return true
-                  }
-                });
-              }
+              //filter links
+              links = links.filter((item:any)=>{
+                if (item.source.id === e.source && item.target.id === e.target) {
+                  return false
+                }
+                if (item.source.id === e.target && item.target.id === e.source) {
+                  return false
+                }
+                return true
+              });
             } else if(e.event_type=== 'node_attributes'){
               for (var n of nodes){
                 if (n.id === e.id){
@@ -121,12 +130,23 @@ const Graph = (props: ComponentProps) => {
                 }
               }
             } else if(e.event_type === 'link_attributes'){
-              let link = links.find((item:any)=>((item.source.id === e.source) && (item.target.id === e.target)))
+
+              //find link
+              let link = links.find((item:any)=>{
+                if ((item.source.id === e.source) && (item.target.id === e.target)){
+                  return true
+                }
+                if (directed && item.source.id === e.target && item.target.id === e.source){
+                  return true
+                }
+                return false
+              });
+
+              // add attributes to link
               for (var propt in e.attributes){
                 link[propt]=e.attributes[propt]
               }
             } else if (e.event_type === 'new_graph'){
-              console.log(e.graph)
               nodes = e.graph.nodes;
               links = e.graph.links;
             }
@@ -149,7 +169,7 @@ const Graph = (props: ComponentProps) => {
     return () => {
       clearInterval(interval);
     };
-  },[statedata,events,time_interval,initial_data]);
+  },[statedata,events,time_interval,initial_data,continuous_play]);
 
   // Add a label and pass min/max variables to the baseui Slider
   return (
@@ -160,7 +180,6 @@ const Graph = (props: ComponentProps) => {
       <ForceGraph2D
           graphData={statedata.network}
           {...graphprops}
-          key={Math.round(Math.random()*100)}
       />
     </>
   );
