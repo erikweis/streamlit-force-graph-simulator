@@ -1,6 +1,6 @@
 # streamlit-force-graph-simulator
 
-Useful for animating dynamic networks using d3 force-directed graph from a purely python interface. Streamlit handles the interace between python and javascript automatically, and apps can be deployed automatically with a very simple structure.
+Useful for animating dynamic networks using d3 force-directed graph from a purely python interface. Streamlit handles the interace between python and javascript automatically, and apps can be deployed automatically with a very little boilerplate.
 
 # installation
 
@@ -100,9 +100,9 @@ The `ForceGraphSimulation` class applies has the following attributes and method
 | <b>add_node</b> | <ul><li>`nodeID`: identifier of node </li> <li>`kwargs`: attributes of the node</li></ul> | None | add node to graph |
 | <b>remove_node</b> | <ul><li>`nodeID`: identifier of node </li></ul> | None | Remove node from graph and all edges connected to the node |
 | <b>set_node_attributes</b> | <ul><li>`nodeID`: identifier of node </li> <li>`kwargs`: attributes of the node</li></ul> | None | Modify node attributes | 
-| <b>add_edge</b> | <ul><li>`source`: identifier of source node</li><li>`target`: indentifier of target node</li><li>`kwargs`: attributes of the node</li></ul> | None | Add edge to the graph |
+| <b>add_edge</b> | <ul><li>`source`: identifier of source node</li><li>`target`: indentifier of target node</li><li>`kwargs`: attributes of the edge</li></ul> | None | Add edge to the graph |
 | <b>remove_edge</b> | <ul><li>`source`: identifier of source node</li><li>`target`: indentifier of target node</li></ul> | None | Remove edge from the graph |
-| <b>set_edge_attributes</b> | <ul><li>`source`: identifier of source node</li><li>`target`: indentifier of target node</li><li>`kwargs`: attributes of the node</li></ul> | None | Modify attributes of the edge |
+| <b>set_edge_attributes</b> | <ul><li>`source`: identifier of source node</li><li>`target`: indentifier of target node</li><li>`kwargs`: attributes of the edge</li></ul> | None | Modify attributes of the edge |
 
 ## More complex simulations
 
