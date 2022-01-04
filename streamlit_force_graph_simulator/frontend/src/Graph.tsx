@@ -171,16 +171,17 @@ const Graph = (props: ComponentProps) => {
     };
   },[statedata,events,time_interval,initial_data,continuous_play]);
 
+  let simulation_panel = <>
+    <Button onClick={playpause} variant={"light"}>{statedata.paused ? <Play/> : <Pause/>}</Button>
+    <Button onClick={reset} variant={'light'}><ArrowCounterclockwise/></Button>
+    <p>{statedata.time}/{events.length}</p>
+  </>
+
   // Add a label and pass min/max variables to the baseui Slider
   return (
     <>
-      <Button onClick={playpause} variant={"light"}>{statedata.paused ? <Play/> : <Pause/>}</Button>
-      <Button onClick={reset} variant={'light'}><ArrowCounterclockwise/></Button>
-      <p>{statedata.time}/{events.length}</p>
-      <ForceGraph2D
-          graphData={statedata.network}
-          {...graphprops}
-      />
+      {events.length > 0 ? simulation_panel : <></>}
+      <ForceGraph2D graphData={statedata.network} {...graphprops}/>
     </>
   );
 };

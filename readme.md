@@ -48,7 +48,7 @@ The component `st_graph` has takes the following arguments:
 This package also includes a python object that can automatically assemble events as an underlying `networkx` `Graph` object is accessed. It can be used as follows:
 
 ```{python}
-from streamlit_force_graph_simulator import ForceGraphSimulation
+from streamlit_force_graph_simulator import ForceGraphSimulation, st_graph
 import network as nx
 
 G = nx.erdos_renyi_graph(5,0.8,directed=True)
